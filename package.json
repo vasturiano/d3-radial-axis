@@ -1,0 +1,40 @@
+{
+  "name": "d3-radial-axis",
+  "version": "0.0.1",
+  "description": "Radial axes for D3 components.",
+  "keywords": [
+    "d3",
+    "d3-module",
+    "axis",
+    "radial",
+    "polar",
+    "scale",
+    "visualization"
+  ],
+  "main": "dist/d3-radial-axis.js",
+  "jsnext:main": "src/index",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vasturiano/d3-radial-axis.git"
+  },
+  "author": {
+    "name": "Vasco Asturiano",
+    "url": "http://bl.ocks.org/vasturiano"
+  },
+  "homepage": "https://github.com/vasturiano/d3-radial-axis#readme",
+  "scripts": {
+    "build": "rm -rf dist && mkdir dist && rollup -c --banner \"$(preamble)\"",
+    "watch": "rollup -c -w",
+    "minify": "uglifyjs dist/d3-radial-axis.js -o dist/d3-radial-axis.min.js -c -m --preamble \"$(preamble)\"",
+    "prepublish": "npm run build && npm run minify"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "package-preamble": "^0.0.2",
+    "rollup": "^0.36",
+    "rollup-plugin-commonjs": "^5.0",
+    "rollup-plugin-node-resolve": "^2.0",
+    "rollup-watch": "^2.5",
+    "uglify-js": "^2.7"
+  }
+}
