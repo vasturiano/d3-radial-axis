@@ -25,13 +25,13 @@ or even
 ```
 then
 ```
-var myRadialAxis = d3.axisRadialInner(),
-    myScale = d3.scaleLinear()
+var myScale = d3.scaleLinear()
         .domain([-10, 10])
         .range([-Math.PI, Math.PI]),
-    myRadius = 100;
+    myRadius = 100,
+    myRadialAxis = d3.axisRadialInner(myScale, myRadius);
 
-d3.select(<myDOMElement>).call(myRadialAxis(myScale, myRadius));
+d3.select(<myDOMElement>).call(myRadialAxis);
 ```
 
 ## API reference
