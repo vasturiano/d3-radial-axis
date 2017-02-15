@@ -88,7 +88,7 @@ function radialAxis(scale, radius, outer) {
         'M' + polar2cart(range[0], radius + tickSizeOuter * (outer?1:-1)).join(',')
         + 'L' + polar2cart(range[0]).join(',')
         + 'A' + [radius, radius, 0,
-                ((range[1]-range[0])>Math.PI?1:0), // Large arc flag
+                (Math.abs(range[1]-range[0])>Math.PI?1:0), // Large arc flag
                 (range[1]>range[0]?1:0)            // Sweep (clock-wise) flag
             ].concat(polar2cart(range[1])).join(',')
         + 'L' + polar2cart(range[1], radius + tickSizeOuter * (outer?1:-1)).join(',')
