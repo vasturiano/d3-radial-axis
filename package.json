@@ -30,11 +30,11 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "package-preamble": "^0.0.2",
-    "rollup": "^0.36",
-    "rollup-plugin-commonjs": "^5.0",
+    "package-preamble": "~0.0.2",
+    "rollup": "^0.41",
+    "rollup-plugin-commonjs": "^7.0",
     "rollup-plugin-node-resolve": "^2.0",
-    "rollup-watch": "^2.5",
+    "rollup-watch": "^3.2",
     "uglify-js": "^2.7"
   }
 }
