@@ -1,6 +1,8 @@
 # d3-radial-axis
 A radial implementation of the [D3 axis](https://github.com/d3/d3-axis) component.
 
+[![NPM](https://nodei.co/npm/d3-radial-axis.png?compact=true)](https://nodei.co/npm/d3-radial-axis/)
+
 ## Quick start
 
 ```
