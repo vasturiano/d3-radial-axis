@@ -31,7 +31,7 @@ var myRadialAxis = d3.axisRadialInner(),
         .range([-Math.PI, Math.PI]),
     myRadius = 100;
 
-d3.select(<myDOMElement>).call(myRadialAxis, myScale, myRadius);
+d3.select(<myDOMElement>).call(myRadialAxis(myScale, myRadius));
 ```
 
 ## API reference
