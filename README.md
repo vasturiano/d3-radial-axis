@@ -1,25 +1,19 @@
 # d3-radial-axis
+
+[![NPM](https://nodei.co/npm/d3-radial-axis.png?compact=true)](https://nodei.co/npm/d3-radial-axis/)
+
 A radial implementation of the [D3 axis](https://github.com/d3/d3-axis) component.
 
 To use for instance in a [clock](https://bl.ocks.org/vasturiano/118e167e9bc93356221f67905c87cd6f) or a [gauge meter](https://bl.ocks.org/vasturiano/979b96ddd4f1461458bc3669528d0edc).
 
-[![NPM](https://nodei.co/npm/d3-radial-axis.png?compact=true)](https://nodei.co/npm/d3-radial-axis/)
-
 ## Quick start
 
 ```
-npm install
-npm run build
-```
-
-## How to instantiate
-
-```
-import { axisRadialInner, axisRadialOuter } from 'd3-radial-axis';
+import { d3AxisRadialInner, d3AxisRadialOuter } from 'd3-radial-axis';
 ```
 or
 ```
-var RadialAxis = require('d3-radial-axis');
+var d3.radialAxis = require('d3-radial-axis');
 ```
 or even
 ```
@@ -51,4 +45,11 @@ d3.axisRadialOuter()
      .tickSizeInner()
      .tickSizeOuter()
      .tickPadding()
+```
+
+## Local development
+
+```
+npm install
+npm run watch
 ```
