@@ -1,0 +1,35 @@
+<head>
+  <script src="//unpkg.com/d3"></script>
+  <!--<script src="//unpkg.com/d3-radial-axis"></script>-->
+  <script src="../dist/d3-radial-axis.js"></script>
+
+  <style>
+    body { margin: 0; }
+  </style>
+</head>
+
+<body>
+<svg id="canvas"></svg>
+
+<script>
+  const EXTRA_ANGLE = 15,
+    whRatio = 2 / (Math.sin(deg2rad(EXTRA_ANGLE)) + 1.1),
+    r = Math.min(window.innerWidth, window.innerHeight * whRatio) / 2,
+    angleScale = d3.scaleLinear().domain([0, 100]).range([-90 - EXTRA_ANGLE, 90 + EXTRA_ANGLE])
+
+  // Size canvas
+  const svg = d3.select('#canvas')
+    .attr('width', r * 2)
+    .attr('height', r * 2 * whRatio)
+    .attr('viewBox', `${-r} ${-r} ${r*2} ${r*2*whRatio}`)
+
+  // Add axis
+  svg.append('g').classed('axis', true)
+    .call(d3.axisRadialInner(
+      angleScale.copy().range(angleScale.range().map(deg2rad)),
+      r - 5
+    ));
+
+  function deg2rad(deg) { return deg * Math.PI / 180 }
+</script>
+</body>
