@@ -18,7 +18,7 @@ function entering() {
   return !this.__axis;
 }
 
-function radialAxis(scale, radius, outer) {
+function radialAxis(scale, startRadius, endRadius, outer) {
   var tickArguments = [],
       tickValues = null,
       tickFormat = null,
@@ -31,7 +31,7 @@ function radialAxis(scale, radius, outer) {
   }
 
   function polar2cart(angle, r) {
-      r = r === undefined ? radius : r;
+      r = r === undefined ? startRadius : r;
       return [Math.sin(angle) * r, -Math.cos(angle) * r];
   }
 
@@ -84,20 +84,32 @@ function radialAxis(scale, radius, outer) {
 
     tickExit.remove();
 
-    path.attr('d',
-        'M' + polar2cart(range[0], radius + tickSizeOuter * (outer?1:-1)).join(',')
+    if (endRadius === undefined) {
+      path.attr('d',
+        'M' + polar2cart(range[0], radius + tickSizeOuter * (outer ? 1 : -1)).join(',')
         + 'L' + polar2cart(range[0]).join(',')
-        + ((Math.abs(range[1]-range[0])>=2*Math.PI) // Full-circle
-            ? 'A' + [radius, radius, 0, 1, 1].concat(polar2cart(range[0]+Math.PI)).join(',')
-              + 'A' + [radius, radius, 0, 1, 1].concat(polar2cart(range[0])).join(',')
-            : ''
+        + ((Math.abs(range[1] - range[0]) >= 2 * Math.PI) // Full-circle
+          ? 'A' + [radius, radius, 0, 1, 1].concat(polar2cart(range[0] + Math.PI)).join(',')
+          + 'A' + [radius, radius, 0, 1, 1].concat(polar2cart(range[0])).join(',')
+          : ''
         )
         + 'A' + [radius, radius, 0,
-                (Math.abs(range[1]-range[0])%(2*Math.PI)>Math.PI?1:0), // Large arc flag
-                (range[1]>range[0]?1:0)                                // Sweep (clock-wise) flag
-            ].concat(polar2cart(range[1])).join(',')
-        + 'L' + polar2cart(range[1], radius + tickSizeOuter * (outer?1:-1)).join(',')
-    );
+          (Math.abs(range[1] - range[0]) % (2 * Math.PI) > Math.PI ? 1 : 0), // Large arc flag
+          (range[1] > range[0] ? 1 : 0)                                // Sweep (clock-wise) flag
+        ].concat(polar2cart(range[1])).join(',')
+        + 'L' + polar2cart(range[1], radius + tickSizeOuter * (outer ? 1 : -1)).join(',')
+      );
+    } else {
+      // spiral
+      var lineGen = d3.radialLine()
+        .angle(function(d) {})
+        .radius(function(d) {})
+        .interpolate('cardinal');
+
+      var points =
+
+      path.attr('d', lineGen(points));
+    }
 
     tick.attr("opacity", 1)
         .attr("transform", function(d) {
@@ -163,10 +175,10 @@ function radialAxis(scale, radius, outer) {
   return axis;
 }
 
-export function axisRadialInner(angleScale, radius) {
-    return radialAxis(angleScale, radius, false);
+export function axisRadialInner(angleScale, startRadius, endRadius) {
+    return radialAxis(angleScale, startRadius, endRadius, false);
 }
 
-export function axisRadialOuter(angleScale, radius) {
-    return radialAxis(angleScale, radius, true);
+export function axisRadialOuter(angleScale, startRadius, endRadius) {
+    return radialAxis(angleScale, startRadius, endRadius, true);
 }
