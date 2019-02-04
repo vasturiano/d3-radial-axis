@@ -1,9 +1,12 @@
+import { lineRadial as d3LineRadial, curveNatural as d3CurveNatural } from 'd3-shape';
+import { scaleLinear } from 'd3-scale';
+
 function identity(x) {
-    return x;
+  return x;
 }
 
 function translate(x, y) {
-    return "translate(" + x + "," + y + ")";
+  return "translate(" + x + "," + y + ")";
 }
 
 function center(scale) {
@@ -18,53 +21,56 @@ function entering() {
   return !this.__axis;
 }
 
-function radialAxis(scale, startRadius, endRadius, outer) {
+function radialAxis(angleScale, startRadius, endRadius, outer) {
   var tickArguments = [],
-      tickValues = null,
-      tickFormat = null,
-      tickSizeInner = 6,
-      tickSizeOuter = 6,
-      tickPadding = 12;
+    tickValues = null,
+    tickFormat = null,
+    tickSizeInner = 6,
+    tickSizeOuter = 6,
+    tickPadding = 12;
 
-  function angleTransform(angle) {
-      return translate.apply(translate, polar2cart(angle));
+  function angleTransform(angle, radius) {
+    return translate.apply(translate, polar2cart(angle,radius));
   }
 
   function polar2cart(angle, r) {
-      r = r === undefined ? startRadius : r;
-      return [Math.sin(angle) * r, -Math.cos(angle) * r];
+    return [Math.sin(angle) * r, -Math.cos(angle) * r];
   }
 
 
   function axis(context) {
-    var values = tickValues == null ? (scale.ticks ? scale.ticks.apply(scale, tickArguments) : scale.domain()) : tickValues,
-        format = tickFormat == null ? (scale.tickFormat ? scale.tickFormat.apply(scale, tickArguments) : identity) : tickFormat,
-        spacing = Math.max(tickSizeInner, 0) + tickPadding,
-        range = scale.range(),
-        position = (scale.bandwidth ? center : identity)(scale.copy()),
-        selection = context.selection ? context.selection() : context,
-        path = selection.selectAll(".domain").data([null]),
-        tick = selection.selectAll(".tick").data(values, scale).order(),
-        tickExit = tick.exit(),
-        tickEnter = tick.enter().append("g").attr("class", "tick"),
-        line = tick.select("line"),
-        text = tick.select("text");
+    var isSpiral = endRadius !== undefined && startRadius !== endRadius;
+    endRadius = !isSpiral ? startRadius : endRadius;
+
+    var values = tickValues == null ? (angleScale.ticks ? angleScale.ticks.apply(angleScale, tickArguments) : angleScale.domain()) : tickValues,
+      format = tickFormat == null ? (angleScale.tickFormat ? angleScale.tickFormat.apply(angleScale, tickArguments) : identity) : tickFormat,
+      spacing = Math.max(tickSizeInner, 0) + tickPadding,
+      radiusScale = angleScale.copy().range([startRadius, endRadius]),
+      angleRange = angleScale.range(),
+      anglePos = (angleScale.bandwidth ? center : identity)(angleScale.copy()),
+      selection = context.selection ? context.selection() : context,
+      path = selection.selectAll(".domain").data([null]),
+      tick = selection.selectAll(".tick").data(values, angleScale).order(),
+      tickExit = tick.exit(),
+      tickEnter = tick.enter().append("g").attr("class", "tick"),
+      line = tick.select("line"),
+      text = tick.select("text");
 
     path = path.merge(path.enter().insert("path", ".tick")
-        .attr("class", "domain")
-        .attr("stroke", "#000")
+      .attr("class", "domain")
+      .attr("stroke", "#000")
     );
 
     tick = tick.merge(tickEnter);
 
     line = line.merge(tickEnter.append("line")
-        .attr("stroke", "#000")
+      .attr("stroke", "#000")
     );
 
     text = text.merge(tickEnter.append("text")
-        .attr("fill", "#000")
-        .attr("dy", ".35em")
-        .attr("text-anchor", "middle")
+      .attr("fill", "#000")
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
   );
 
     if (context !== selection) {
@@ -74,70 +80,91 @@ function radialAxis(scale, startRadius, endRadius, outer) {
       text = text.transition(context);
 
       tickExit = tickExit.transition(context)
-          .attr("opacity", 0)
-          .attr("transform", function(d) { return isFinite(d = position(d)) ? angleTransform(d) : this.getAttribute("transform"); });
+        .attr("opacity", 0)
+        .attr("transform", function(d) { return isFinite(anglePos(d)) ? angleTransform(anglePos(d), radiusScale(d)) : this.getAttribute("transform"); });
 
       tickEnter
-          .attr("opacity", 0)
-          .attr("transform", function(d) { var p = this.parentNode.__axis; return angleTransform(p && isFinite(p = p(d)) ? p : position(d)); });
+        .attr("opacity", 0)
+        .attr("transform", function(d) { var p = this.parentNode.__axis; return angleTransform(p && isFinite(p = p(d)) ? p : anglePos(d), radiusScale(d)); });
     }
 
     tickExit.remove();
 
-    if (endRadius === undefined) {
-      path.attr('d',
-        'M' + polar2cart(range[0], radius + tickSizeOuter * (outer ? 1 : -1)).join(',')
-        + 'L' + polar2cart(range[0]).join(',')
-        + ((Math.abs(range[1] - range[0]) >= 2 * Math.PI) // Full-circle
-          ? 'A' + [radius, radius, 0, 1, 1].concat(polar2cart(range[0] + Math.PI)).join(',')
-          + 'A' + [radius, radius, 0, 1, 1].concat(polar2cart(range[0])).join(',')
-          : ''
-        )
-        + 'A' + [radius, radius, 0,
-          (Math.abs(range[1] - range[0]) % (2 * Math.PI) > Math.PI ? 1 : 0), // Large arc flag
-          (range[1] > range[0] ? 1 : 0)                                // Sweep (clock-wise) flag
-        ].concat(polar2cart(range[1])).join(',')
-        + 'L' + polar2cart(range[1], radius + tickSizeOuter * (outer ? 1 : -1)).join(',')
-      );
-    } else {
-      // spiral
-      var lineGen = d3.radialLine()
-        .angle(function(d) {})
-        .radius(function(d) {})
-        .interpolate('cardinal');
-
-      var points =
-
-      path.attr('d', lineGen(points));
+    function getTickPath(angle, r) {
+      return 'M' + polar2cart(angle, r + tickSizeOuter * (outer ? 1 : -1)).join(',')
+        + 'L' + polar2cart(angle, r).join(',');
     }
 
+    function getArcPath(startAngle, endAngle, r) {
+      return 'M' + polar2cart(startAngle, r).join(',')
+        + ((Math.abs(endAngle - startAngle) >= 2 * Math.PI) // Full-circle
+            ? 'A' + [r, r, 0, 1, 1].concat(polar2cart(startAngle + Math.PI, r)).join(',')
+          + 'A' + [r, r, 0, 1, 1].concat(polar2cart(startAngle, r)).join(',')
+            : ''
+        )
+        + 'A' + [r, r, 0,
+          (Math.abs(endAngle - startAngle) % (2 * Math.PI) > Math.PI ? 1 : 0),  // Large arc flag
+          (endAngle > startAngle ? 1 : 0)                                       // Sweep (clock-wise) flag
+        ].concat(polar2cart(endAngle, r)).join(',');
+    }
+
+    function getSpiralPath(startAngle, endAngle, startR, endR) {
+      var numPoints = (endAngle - startAngle) / (Math.PI * 2) * 40; // 40 points per 360deg
+
+      var lineGen = d3LineRadial()
+        .angle(scaleLinear().range([startAngle, endAngle]))
+        .radius(scaleLinear().range([startR, endR]))
+        .curve(d3CurveNatural);
+
+      return 'M' + polar2cart(startAngle, startR).join(',')
+        + lineGen(scaleLinear().ticks(numPoints));
+    }
+
+    path.attr('d',
+      (isSpiral ? getSpiralPath : getArcPath)(angleRange[0], angleRange[1], startRadius, endRadius)
+      + getTickPath(angleRange[0], startRadius)
+      + getTickPath(angleRange[1], endRadius)
+    );
+
     tick.attr("opacity", 1)
-        .attr("transform", function(d) {
-            return angleTransform(position(d));
-        });
+      .attr("transform", function(d) {
+        return angleTransform(anglePos(d), radiusScale(d));
+      });
 
     line
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('x2', function(d) { return polar2cart(position(d), tickSizeInner)[0] * (outer?1:-1); })
-        .attr('y2', function(d) { return polar2cart(position(d), tickSizeInner)[1] * (outer?1:-1); });
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', function(d) { return polar2cart(anglePos(d), tickSizeInner)[0] * (outer?1:-1); })
+      .attr('y2', function(d) { return polar2cart(anglePos(d), tickSizeInner)[1] * (outer?1:-1); });
 
     text
-        .attr('x', function(d) { return polar2cart(position(d), spacing)[0] * (outer?1:-1); })
-        .attr('y', function(d) { return polar2cart(position(d), spacing)[1] * (outer?1:-1); })
-        .text(format);
+      .attr('x', function(d) { return polar2cart(anglePos(d), spacing)[0] * (outer?1:-1); })
+      .attr('y', function(d) { return polar2cart(anglePos(d), spacing)[1] * (outer?1:-1); })
+      .text(format);
 
     selection.filter(entering)
-        .attr("fill", "none")
-        .attr("font-size", 10)
-        .attr("font-family", "sans-serif");
+      .attr("fill", "none")
+      .attr("font-size", 10)
+      .attr("font-family", "sans-serif");
 
     selection
-        .each(function() { this.__axis = position; });
+      .each(function() { this.__axis = anglePos; });
   }
 
-  axis.scale = function(_) {
-    return arguments.length ? (scale = _, axis) : scale;
+  axis.angleScale = function(_) {
+    return arguments.length ? (angleScale = _, axis) : angleScale;
+  };
+
+  axis.radius = function(_) {
+    return arguments.length ? (startRadius = endRadius = +_, axis) : startRadius;
+  };
+
+  axis.startRadius = function(_) {
+    return arguments.length ? (startRadius = +_, axis) : startRadius;
+  };
+
+  axis.endRadius = function(_) {
+    return arguments.length ? (endRadius = +_, axis) : endRadius;
   };
 
   axis.ticks = function() {
@@ -176,9 +203,9 @@ function radialAxis(scale, startRadius, endRadius, outer) {
 }
 
 export function axisRadialInner(angleScale, startRadius, endRadius) {
-    return radialAxis(angleScale, startRadius, endRadius, false);
+  return radialAxis(angleScale, startRadius, endRadius, false);
 }
 
 export function axisRadialOuter(angleScale, startRadius, endRadius) {
-    return radialAxis(angleScale, startRadius, endRadius, true);
+  return radialAxis(angleScale, startRadius, endRadius, true);
 }
