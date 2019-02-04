@@ -1,10 +1,11 @@
 <head>
+  <script src="//unpkg.com/dat.gui"></script>
   <script src="//unpkg.com/d3"></script>
   <script src="//unpkg.com/d3-radial-axis"></script>
   <!--<script src="../dist/d3-radial-axis.js"></script>-->
 
   <style>
-    body { margin: 0; }
+    body { margin: 0; text-align: center; }
   </style>
 </head>
 
@@ -12,28 +13,59 @@
 <svg id="canvas"></svg>
 
 <script>
-  const NUM_LOOPS = 5;
-  const MIN_R = 25; // px
+  const INITIAL = {
+    turns: 5,
+    minR: 25 // px
+  };
 
-  const r = Math.min(window.innerWidth, window.innerHeight) / 2;
-  const angleScale = d3.scaleLinear()
+  const outerR = Math.min(window.innerWidth, window.innerHeight) / 2;
+
+  // controls
+  const controls = {
+    '# turns': INITIAL.turns,
+    'Inner Radius': INITIAL.minR,
+    'Scale Exponent': 1
+  };
+  const gui = new dat.GUI();
+  gui.add(controls, '# turns', 0.25, 10)
+    .onChange(turns => {
+      angleScale.range([90, 90 + turns * 360].map(deg2rad));
+      spiralAxis.ticks(turns * 8);
+      render();
+    });
+  gui.add(controls, 'Inner Radius', 0, outerR - 5)
+    .onChange(innerR => {
+      spiralAxis.startRadius(innerR);
+      render();
+    });
+  gui.add(controls, 'Scale Exponent', 1, 10)
+    .onChange(exp => {
+    angleScale.exponent(1/exp);
+    render();
+  });
+
+  const angleScale = d3.scalePow()
     .domain([0, 100])
-    .range([90, NUM_LOOPS * 360].map(deg2rad));
-
+    .range([90, INITIAL.turns * 360].map(deg2rad));
   const spiralAxis = d3.axisRadialInner(angleScale)
-    .startRadius(MIN_R)
-    .endRadius(r - 5)
-    .ticks(NUM_LOOPS * 8);
+    .startRadius(INITIAL.minR)
+    .endRadius(outerR - 5)
+    .ticks(INITIAL.turns * 8);
 
   // Size canvas
   const svg = d3.select('#canvas')
-    .attr('width', r * 2)
-    .attr('height', r * 2)
-    .attr('viewBox', `${-r} ${-r} ${r*2} ${r*2}`);
+    .attr('width', outerR * 2)
+    .attr('height', outerR * 2)
+    .attr('viewBox', `${-outerR} ${-outerR} ${outerR*2} ${outerR*2}`);
 
   // Add axis
-  svg.append('g').classed('axis', true)
-    .call(spiralAxis);
+  const axisEl = svg.append('g').classed('axis', true);
+
+  render();
+
+  function render() {
+    axisEl.call(spiralAxis);
+  }
 
   function deg2rad(deg) { return deg * Math.PI / 180 }
 </script>
