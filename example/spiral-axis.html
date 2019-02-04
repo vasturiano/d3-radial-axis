@@ -1,7 +1,7 @@
 <head>
   <script src="//unpkg.com/d3"></script>
-  <!--<script src="//unpkg.com/d3-radial-axis"></script>-->
-  <script src="../dist/d3-radial-axis.js"></script>
+  <script src="//unpkg.com/d3-radial-axis"></script>
+  <!--<script src="../dist/d3-radial-axis.js"></script>-->
 
   <style>
     body { margin: 0; }
@@ -12,23 +12,28 @@
 <svg id="canvas"></svg>
 
 <script>
-  const EXTRA_ANGLE = 15,
-    whRatio = 2 / (Math.sin(deg2rad(EXTRA_ANGLE)) + 1.1),
-    r = Math.min(window.innerWidth, window.innerHeight * whRatio) / 2,
-    angleScale = d3.scaleLinear().domain([0, 100]).range([-90 - EXTRA_ANGLE, 90 + EXTRA_ANGLE])
+  const NUM_LOOPS = 5;
+  const MIN_R = 25; // px
+
+  const r = Math.min(window.innerWidth, window.innerHeight) / 2;
+  const angleScale = d3.scaleLinear()
+    .domain([0, 100])
+    .range([90, NUM_LOOPS * 360].map(deg2rad));
+
+  const spiralAxis = d3.axisRadialInner(angleScale)
+    .startRadius(MIN_R)
+    .endRadius(r - 5)
+    .ticks(NUM_LOOPS * 8);
 
   // Size canvas
   const svg = d3.select('#canvas')
     .attr('width', r * 2)
-    .attr('height', r * 2 * whRatio)
-    .attr('viewBox', `${-r} ${-r} ${r*2} ${r*2*whRatio}`)
+    .attr('height', r * 2)
+    .attr('viewBox', `${-r} ${-r} ${r*2} ${r*2}`);
 
   // Add axis
   svg.append('g').classed('axis', true)
-    .call(d3.axisRadialInner(
-      angleScale.copy().range(angleScale.range().map(deg2rad)),
-      r - 5
-    ));
+    .call(spiralAxis);
 
   function deg2rad(deg) { return deg * Math.PI / 180 }
 </script>
