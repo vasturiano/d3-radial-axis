@@ -1,0 +1,71 @@
+<head>
+  <script src="//unpkg.com/dat.gui"></script>
+  <script src="//unpkg.com/d3"></script>
+  <script src="//unpkg.com/d3-radial-axis"></script>
+  <!--<script src="../dist/d3-radial-axis.js"></script>-->
+
+  <style>
+    body { margin: 0; text-align: center; }
+  </style>
+</head>
+
+<body>
+<svg id="canvas"></svg>
+
+<script>
+  const INITIAL = {
+    angleLength: 180 + 20,
+    startAngle: -100
+  };
+
+  const outerR = Math.min(window.innerWidth, window.innerHeight) / 2;
+
+  // controls
+  const controls = {
+    'Angle Length': INITIAL.angleLength,
+    'Start Angle': INITIAL.startAngle,
+    'Scale Exponent': 1
+  };
+  const gui = new dat.GUI();
+  gui.add(controls, 'Angle Length', 1, 360)
+    .onChange(ang => {
+      const startAngle = controls['Start Angle'];
+      angleScale.range([startAngle, startAngle + ang].map(deg2rad));
+      render();
+    });
+  gui.add(controls, 'Start Angle', -180, 180)
+    .onChange(ang => {
+      const angleLength = controls['Angle Length'];
+      angleScale.range([ang, ang + angleLength].map(deg2rad));
+      render();
+    });
+  gui.add(controls, 'Scale Exponent', 0.1, 5)
+    .onChange(exp => {
+    angleScale.exponent(exp);
+    render();
+  });
+
+  const angleScale = d3.scalePow()
+    .domain([0, 100])
+    .range([INITIAL.startAngle, INITIAL.startAngle + INITIAL.angleLength].map(deg2rad));
+  const arcAxis = d3.axisRadialInner(angleScale)
+    .radius(outerR - 5);
+
+  // Size canvas
+  const svg = d3.select('#canvas')
+    .attr('width', outerR * 2)
+    .attr('height', outerR * 2)
+    .attr('viewBox', `${-outerR} ${-outerR} ${outerR*2} ${outerR*2}`);
+
+  // Add axis
+  const axisEl = svg.append('g').classed('axis', true);
+
+  render();
+
+  //
+
+  function render() { axisEl.call(arcAxis); }
+
+  function deg2rad(deg) { return deg * Math.PI / 180 }
+</script>
+</body>
