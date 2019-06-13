@@ -1,6 +1,9 @@
-# d3-radial-axis
+d3-radial-axis
+==============
 
-[![NPM](https://nodei.co/npm/d3-radial-axis.png?compact=true)](https://nodei.co/npm/d3-radial-axis/)
+[![NPM package][npm-img]][npm-url]
+[![Build Size][build-size-img]][build-size-url]
+[![Dependencies][dependencies-img]][dependencies-url]
 
 A radial implementation of the [D3 axis](https://github.com/d3/d3-axis) component.
 
@@ -58,3 +61,9 @@ d3.axisRadialOuter()
     .endRadius()
 ```
 
+[npm-img]: https://img.shields.io/npm/v/d3-radial-axis.svg
+[npm-url]: https://npmjs.org/package/d3-radial-axis
+[build-size-img]: https://img.shields.io/bundlephobia/minzip/d3-radial-axis.svg
+[build-size-url]: https://bundlephobia.com/result?p=d3-radial-axis
+[dependencies-img]: https://img.shields.io/david/vasturiano/d3-radial-axis.svg
+[dependencies-url]: https://david-dm.org/vasturiano/d3-radial-axis
