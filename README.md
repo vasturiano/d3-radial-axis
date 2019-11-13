@@ -12,7 +12,7 @@ To use for instance in a [clock](https://bl.ocks.org/vasturiano/118e167e9bc93356
 ## Quick start
 
 ```
-import { d3AxisRadialInner, d3AxisRadialOuter } from 'd3-radial-axis';
+import { axisRadialInner, axisRadialOuter } from 'd3-radial-axis';
 ```
 or
 ```
