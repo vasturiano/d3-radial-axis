@@ -1,5 +1,5 @@
-import commonJs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
+import commonJs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
 import { name, homepage, version } from './package.json';
 
 export default {
