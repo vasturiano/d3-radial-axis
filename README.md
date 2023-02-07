@@ -14,11 +14,7 @@ To use for instance in a [clock](https://bl.ocks.org/vasturiano/118e167e9bc93356
 ```
 import { axisRadialInner, axisRadialOuter } from 'd3-radial-axis';
 ```
-or
-```
-var d3.radialAxis = require('d3-radial-axis');
-```
-or even
+or using a *script* tag
 ```
 <script src="/path/to/dist/d3-radial-axis.js"></script>
 ```
