@@ -3,11 +3,11 @@ d3-radial-axis
 
 [![NPM package][npm-img]][npm-url]
 [![Build Size][build-size-img]][build-size-url]
-[![Dependencies][dependencies-img]][dependencies-url]
+[![NPM Downloads][npm-downloads-img]][npm-downloads-url]
 
 A radial implementation of the [D3 axis](https://github.com/d3/d3-axis) component.
 
-To use for instance in a [clock](https://bl.ocks.org/vasturiano/118e167e9bc93356221f67905c87cd6f) or a [gauge meter](https://bl.ocks.org/vasturiano/979b96ddd4f1461458bc3669528d0edc).
+To use for instance in a [clock](https://observablehq.com/@vasturiano/analog-clock) or a [gauge meter](https://observablehq.com/@vasturiano/gauge-meter).
 
 ## Quick start
 
@@ -61,5 +61,5 @@ d3.axisRadialOuter()
 [npm-url]: https://npmjs.org/package/d3-radial-axis
 [build-size-img]: https://img.shields.io/bundlephobia/minzip/d3-radial-axis.svg
 [build-size-url]: https://bundlephobia.com/result?p=d3-radial-axis
-[dependencies-img]: https://img.shields.io/david/vasturiano/d3-radial-axis.svg
-[dependencies-url]: https://david-dm.org/vasturiano/d3-radial-axis
+[npm-downloads-img]: https://img.shields.io/npm/dt/d3-radial-axis
+[npm-downloads-url]: https://www.npmtrends.com/d3-radial-axis
