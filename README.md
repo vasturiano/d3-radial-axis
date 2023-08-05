@@ -11,20 +11,24 @@ To use for instance in a [clock](https://observablehq.com/@vasturiano/analog-clo
 
 ## Quick start
 
-```
+```js
 import { axisRadialInner, axisRadialOuter } from 'd3-radial-axis';
 ```
+
 or using a *script* tag
+
+```html
+<script src="//unpkg.com/d3-radial-axis"></script>
 ```
-<script src="/path/to/dist/d3-radial-axis.js"></script>
-```
+
 then
-```
-var myAngleScale = d3.scaleLinear()
+
+```js
+const myAngleScale = d3.scaleLinear()
     .domain([-10, 10])
     .range([-Math.PI, Math.PI]);
-var myRadius = 100;
-var myRadialAxis = d3.axisRadialInner(myAngleScale, myRadius);
+const myRadius = 100;
+const myRadialAxis = d3.axisRadialInner(myAngleScale, myRadius);
 
 d3.select(<myDOMElement>).call(myRadialAxis);
 ```
