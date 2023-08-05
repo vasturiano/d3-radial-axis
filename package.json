@@ -15,11 +15,11 @@
   ],
   "type": "module",
   "unpkg": "dist/d3-radial-axis.min.js",
-  "main": "src/index.js",
-  "module": "src/index.js",
+  "main": "dist/d3-radial-axis.mjs",
+  "module": "dist/d3-radial-axis.mjs",
   "exports": {
     "umd": "./dist/d3-radial-axis.js",
-    "default": "./src/index.js"
+    "default": "./dist/d3-radial-axis.mjs"
   },
   "sideEffects": false,
   "repository": {
