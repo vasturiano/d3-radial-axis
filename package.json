@@ -14,6 +14,7 @@
     "visualization"
   ],
   "type": "module",
+  "jsdelivr": "dist/d3-radial-axis.min.js",
   "unpkg": "dist/d3-radial-axis.min.js",
   "main": "dist/d3-radial-axis.mjs",
   "module": "dist/d3-radial-axis.mjs",

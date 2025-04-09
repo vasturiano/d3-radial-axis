@@ -18,7 +18,7 @@ import { axisRadialInner, axisRadialOuter } from 'd3-radial-axis';
 or using a *script* tag
 
 ```html
-<script src="//unpkg.com/d3-radial-axis"></script>
+<script src="//cdn.jsdelivr.net/npm/d3-radial-axis"></script>
 ```
 
 then
