@@ -9,6 +9,8 @@ A radial implementation of the [D3 axis](https://github.com/d3/d3-axis) componen
 
 To use for instance in a [clock](https://observablehq.com/@vasturiano/analog-clock) or a [gauge meter](https://observablehq.com/@vasturiano/gauge-meter).
 
+By providing an `endRadius` different than the `startRadius`, the axis can be represented as a [spiral](https://observablehq.com/@vasturiano/spiral-axis).
+
 ## Quick start
 
 ```js
